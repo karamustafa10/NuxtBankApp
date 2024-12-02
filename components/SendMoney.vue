@@ -9,7 +9,7 @@
       class="w-[100%]"
       placeholder="Select a card"
       :options="
-        cards.map((card) => ({
+        getCardWithIdStore.cards.map((card) => ({
           ...card,
           cardName: `${card.cardName} - ${Number(card.cardAmount).toFixed(2)}$`,
         }))
@@ -35,7 +35,7 @@
         value-attribute="id"
         option-attribute="name"
         :options="
-          people.map((person) => ({
+          getAllUsersStore.users.map((person: People) => ({
             id: person.id,
             name: `${person.firstName} ${person.lastName}`,
           }))
@@ -53,25 +53,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import type { Card } from "../models/card";
+import "@/stores/userStore";
+import "@/stores/cardStore";
+import "@/stores/transactionStore";
+import type { Card } from "@/models/card";
 import type { People } from "@/models/people";
-import type { Transaction } from "@/models/transaction";
-import { UserInfoStore } from "@/stores/userInfoStore";
-import { GetCardWithIdStore } from "@/stores/getCardWithIdStore";
-import { GetAllUsersStore } from "@/stores/getAllUsersStore";
-import { GetTransactionStore } from "@/stores/getTransactionStore";
-import { SendMoneyStore } from "~/stores/sendMoneyStore";
 import { useToast, POSITION } from "vue-toastification";
+
+const toast = useToast();
 
 const enterAmountNormal = ref();
 const cardSelectedNormal = ref<Card>();
 const personSelected = ref<People>();
 const senderUserId = ref();
-
-let people = ref<People[]>([]);
-let cards = ref<Card[]>([]);
-let transactions = ref<Transaction[]>([]);
 
 const userInfoStore = UserInfoStore();
 const getCardWithIdStore = GetCardWithIdStore();
@@ -84,13 +78,8 @@ onMounted(async () => {
   await getCardWithIdStore.fetchCardWithId();
   await getAllUsersStore.fetchAllUsers();
   await getTransactionStore.fetchTransactions();
-  cards.value = getCardWithIdStore.cards;
-  people.value = getAllUsersStore.users;
-  transactions.value = getTransactionStore.transactions;
   senderUserId.value = userInfoStore.userId;
 });
-
-const toast = useToast();
 
 const sendMoney = async () => {
   const data = {
@@ -107,10 +96,17 @@ const sendMoney = async () => {
   );
   toast.info(`${response}`, {
     position: POSITION.TOP_CENTER,
-    onClose: () => {
-      window.location.reload();
-    },
+    // onClose: () => {
+    //   window.location.reload();
+    // },
   });
+  await userInfoStore.fetchUserInfo();
+  await getCardWithIdStore.fetchCardWithId();
+  await getAllUsersStore.fetchAllUsers();
+  await getTransactionStore.fetchTransactions();
+  enterAmountNormal.value = null;
+  cardSelectedNormal.value = undefined;
+  personSelected.value = undefined;
 };
 
 useHead({

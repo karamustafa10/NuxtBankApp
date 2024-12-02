@@ -150,9 +150,10 @@
 </template>
 
 <script setup lang="ts">
-import { UserInfoStore } from "@/stores/userInfoStore";
-import { GetCardWithIdStore } from "@/stores/getCardWithIdStore";
-import { GetUserWithIdStore } from "@/stores/getUserWithIdStore";
+import { UserInfoStore } from "@/stores/userStore";
+import { GetCardWithIdStore } from "@/stores/cardStore";
+import { GetUserWithIdStore } from "@/stores/userStore";
+
 const userInfoStore = UserInfoStore();
 const getCardWithIdStore = GetCardWithIdStore();
 const getUserWithIdStore = GetUserWithIdStore();

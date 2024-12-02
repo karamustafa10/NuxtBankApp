@@ -9,7 +9,7 @@
       class="w-[100%]"
       placeholder="Select a card"
       :options="
-        cards.map((card) => ({
+        getCardWithIdStore.cards.map((card) => ({
           ...card,
           cardName: `${card.cardName} - ${Number(card.cardAmount).toFixed(2)}$`,
         }))
@@ -66,15 +66,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import type { Card } from "../models/card";
-import { UserInfoStore } from "@/stores/userInfoStore";
-import { GetCardWithIdStore } from "@/stores/getCardWithIdStore";
+import type { Card } from "@/models/card";
+import { UserInfoStore } from "@/stores/userStore";
+import { GetCardWithIdStore } from "@/stores/cardStore";
 
 const enterAmountQuick = ref();
 const cardSelectedQuick = ref<Card>();
-
-let cards = ref<Card[]>([]);
 
 const userInfoStore = UserInfoStore();
 const getCardWithIdStore = GetCardWithIdStore();
@@ -82,7 +79,6 @@ const getCardWithIdStore = GetCardWithIdStore();
 onMounted(async () => {
   await userInfoStore.fetchUserInfo();
   await getCardWithIdStore.fetchCardWithId();
-  cards.value = getCardWithIdStore.cards;
 });
 </script>
 

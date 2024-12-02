@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { UserInfoStore } from "./userInfoStore";
+import { UserInfoStore } from "@/stores/userStore";
 import type { Transaction } from "~/models/transaction";
 
 export const GetTransactionStore = defineStore("transaction", () => {

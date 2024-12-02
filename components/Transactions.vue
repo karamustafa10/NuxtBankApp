@@ -12,10 +12,13 @@
   </div>
   <div
     class="flex flex-col justify-around h-[20vh]"
-    v-if="transactions && transactions.length > 0"
+    v-if="
+      getTransactionStore.transactions &&
+      getTransactionStore.transactions.length > 0
+    "
   >
     <div
-      v-for="(item, index) in transactions.slice(0, 3)"
+      v-for="(item, index) in getTransactionStore.transactions.slice(0, 3)"
       :key="index"
       class="flex justify-between items-center mt-[1%] px-[1%] rounded-lg transition duration-300 hover:bg-gray-500 hover:bg-opacity-10"
     >
@@ -84,36 +87,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import type { Card } from "../models/card";
-import type { People } from "@/models/people";
-import type { Transaction } from "@/models/transaction";
-import { UserInfoStore } from "@/stores/userInfoStore";
-import { GetCardWithIdStore } from "@/stores/getCardWithIdStore";
-import { GetAllUsersStore } from "@/stores/getAllUsersStore";
-import { GetTransactionStore } from "@/stores/getTransactionStore";
+import { GetTransactionStore } from "@/stores/transactionStore";
 
-const senderUserId = ref();
-
-let people = ref<People[]>([]);
-let cards = ref<Card[]>([]);
-let transactions = ref<Transaction[]>([]);
-
-const userInfoStore = UserInfoStore();
-const getCardWithIdStore = GetCardWithIdStore();
-const getAllUsersStore = GetAllUsersStore();
 const getTransactionStore = GetTransactionStore();
 
 onMounted(async () => {
-  await userInfoStore.fetchUserInfo();
-  await getCardWithIdStore.fetchCardWithId();
-  await getAllUsersStore.fetchAllUsers();
   await getTransactionStore.fetchTransactions();
-  cards.value = getCardWithIdStore.cards;
-  people.value = getAllUsersStore.users;
-  transactions.value = getTransactionStore.transactions;
-  console.log(transactions.value);
-  senderUserId.value = userInfoStore.userId;
 });
 </script>
 
