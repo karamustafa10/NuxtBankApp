@@ -1,0 +1,274 @@
+<template>
+  <div class="w-[100%] h-[100vh] flex">
+    <div class="w-[15%] h-[100vh] bg-gray-100">
+      <div class="w-full h-[10vh] pl-[8%] pt-[8%]">
+        <Logo />
+      </div>
+      <div class="w-full h-[90vh] flex flex-col justify-between rounded-r-2xl">
+        <div class="w-[95%] space-y-2 ml-[5%]">
+          <UButton
+            v-for="(button, index) in buttons"
+            :key="index"
+            :class="[
+              'w-[95%] h-[5vh] text-md side-button',
+              isActive(button.url) ? 'side-button-route' : '',
+            ]"
+            :icon="button.icon"
+            variant="ghost"
+            :label="button.label"
+            :trailing="false"
+            @click="navigateTo(button.url)"
+          />
+        </div>
+        <div class="w-[95%] space-y-2 mb-[5vh] ml-[5%]">
+          <UButton
+            v-for="(button, index) in footerButtons"
+            :key="index"
+            :class="[
+              'w-[95%] h-[5vh] text-md side-button',
+              isActive(button.url) ? 'side-button-route' : '',
+            ]"
+            :icon="button.icon"
+            variant="ghost"
+            :label="button.label"
+            :trailing="false"
+            @click="navigateTo(button.url)"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="w-[85%] h-[100vh] flex flex-col justify-start">
+      <div
+        class="w-[100%] h-[8vh] bg-gray-100 flex items-center justify-end pr-[1%] rounded-b-xl"
+      >
+        <div class="mr-[1%]">
+          <UPopover>
+            <UButton
+              class="header-button"
+              variant="ghost"
+              icon="i-heroicons-magnifying-glass"
+            />
+            <template #panel>
+              <div class="p-4">
+                <Placeholder class="h-20 w-48" />
+                <div class="flex p-[5%]">
+                  <UInput
+                    class="mr-[3%]"
+                    color="blue"
+                    variant="outline"
+                    placeholder="Search..."
+                  />
+                  <UButton
+                    class="search-button"
+                    icon="i-heroicons-magnifying-glass"
+                    size="sm"
+                  />
+                </div>
+              </div>
+            </template>
+          </UPopover>
+        </div>
+        <div class="mr-[1%]">
+          <UPopover>
+            <UChip color="blue">
+              <UButton
+                class="header-button"
+                variant="ghost"
+                icon="i-heroicons-bell"
+              />
+            </UChip>
+            <template #panel>
+              <div class="p-4">
+                <Placeholder class="h-20 w-48" />
+                <div>No notifications here.</div>
+              </div>
+            </template>
+          </UPopover>
+        </div>
+        <div>
+          <button class="rounded-md border-[1px] border-gray-500">
+            <UPopover>
+              <UAvatar :alt="userName" />
+              <template #panel>
+                <div class="p-4 items-start justify-center">
+                  <Placeholder class="h-20 w-48" />
+                  <div>
+                    <UButton
+                      class="w-[100%] editprofile-button"
+                      label="Edit Profile"
+                    />
+                  </div>
+                  <div class="mt-[5%]">
+                    <UButton
+                      class="w-[100%] logout-button text-center"
+                      label="Log Out"
+                      @click="handleLogout"
+                    />
+                  </div>
+                </div>
+              </template>
+            </UPopover>
+          </button>
+        </div>
+      </div>
+      <div>
+        <NuxtPage />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useRoute, useRouter } from "vue-router";
+import { useToast, POSITION } from "vue-toastification";
+
+let userIdString;
+const toast = useToast();
+
+const response = (await $fetch("/api/userInfo")) as any;
+if (response.success && response.userId) {
+  userIdString = response.userId;
+}
+
+const userId = Number(userIdString);
+
+const user = await $fetch("/api/getUserWithId", {
+  method: "POST",
+  body: {
+    id: userId,
+  },
+});
+
+await $fetch("/api/getCardWithId", {
+  method: "POST",
+  body: {
+    id: userId,
+  },
+});
+
+const userName = ref(`${user?.firstName} ${user?.lastName}`);
+
+const route = useRoute();
+const router = useRouter();
+
+const isActive = (url: string) => {
+  return route.path === `/${url.toLowerCase()}`;
+};
+
+const navigateTo = (url: string) => {
+  router.push(`/${url.toLowerCase()}`);
+};
+
+const buttons = [
+  { label: "Dashboard", url: "", icon: "i-heroicons-home" },
+  { label: "Invoices", url: "invoices", icon: "i-heroicons-receipt-percent" },
+  {
+    label: "Messages",
+    url: "messages",
+    icon: "i-heroicons-chat-bubble-left-right",
+  },
+  { label: "My Wallets", url: "my-wallets", icon: "i-heroicons-wallet" },
+  { label: "Activity", url: "activity", icon: "i-heroicons-chart-pie" },
+  {
+    label: "Analytics",
+    url: "analytics",
+    icon: "i-heroicons-chart-bar-square",
+  },
+];
+const footerButtons = [
+  {
+    label: "Get Help",
+    url: "get-help",
+    icon: "i-heroicons-question-mark-circle",
+  },
+  {
+    label: "Settings",
+    url: "settings",
+    icon: "i-heroicons-adjustments-horizontal",
+  },
+];
+
+const handleLogout = async () => {
+  try {
+    await $fetch("/api/logout", { method: "POST" });
+    router.push("/sign-in"); // Giriş sayfasına yönlendirme
+    toast.info(`Logged out successfully!`, {
+      position: POSITION.TOP_CENTER,
+    });
+  } catch (error) {
+    alert("Logout failed: " + error);
+  }
+};
+</script>
+
+<style scoped>
+.side-button {
+  background-color: #f3f4f6;
+  color: gray;
+  transition: 0.3s;
+}
+
+.side-button:hover {
+  background-color: rgba(128, 128, 128, 0.2);
+  transition: 0.3s;
+}
+
+.side-button-route {
+  background-color: #0176fb10;
+  color: #0177fb;
+}
+
+.header-button {
+  background-color: #f3f4f6;
+  color: gray;
+  transition: 0.3s;
+  border: 1px solid gray;
+}
+
+.header-button:hover {
+  background-color: gray;
+  color: white;
+  transition: 0.3s;
+}
+
+.editprofile-button {
+  background-color: #f3f4f6;
+  color: #0177fb;
+  transition: 0.3s;
+  border: 1px solid #0177fb;
+}
+
+.editprofile-button:hover {
+  background-color: #0177fb;
+  color: white;
+  transition: 0.3s;
+}
+
+.logout-button {
+  background-color: #f3f4f6;
+  color: red;
+  transition: 0.3s;
+  border: 1px solid red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logout-button:hover {
+  background-color: red;
+  color: white;
+  transition: 0.3s;
+}
+
+.search-button {
+  background-color: #0176fb10;
+  color: #0177fb;
+  transition: 0.3s;
+}
+
+.search-button:hover {
+  background-color: #0177fb;
+  color: white;
+  transition: 0.3s;
+}
+</style>
