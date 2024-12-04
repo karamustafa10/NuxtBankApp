@@ -158,7 +158,7 @@
 </template>
 
 <script setup lang="ts">
-import { addUserStore } from "@/stores/addUserStore";
+import { addUserStore } from "@/stores/userStore";
 
 const store = addUserStore();
 
