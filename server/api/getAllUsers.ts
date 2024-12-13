@@ -18,9 +18,12 @@ export default defineEventHandler(async (event) => {
         // Fetch users from the database, excluding the user with the given userId
         const users = await prisma.user.findMany({
             where: {
-                id: {
-                    not: userId, // Exclude the user with the provided userId
-                },
+            id: {
+                not: userId, // Exclude the user with the provided userId
+            },
+            role: {
+                not: 'admin', // Exclude users with the role 'admin'
+            },
             },
         });
 

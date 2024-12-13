@@ -36,6 +36,14 @@ export default defineEventHandler(async (event) => {
       };
     }
 
+    if (transferAmountFloat <= 0) {
+      return {
+        status: "error",
+        message: "Inavlid transfer amount.",
+        errorDetails: "",
+      };
+    }
+
     if (senderCard.cardAmount < transferAmountFloat) {
       return {
         status: "error",

@@ -312,10 +312,14 @@ const editProfile = async () => {
     toast.success(`Profile edited successfully!`, {
       position: POSITION.TOP_CENTER,
     });
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
     isEditProfileOpen.value = false;
     oldPassword.value = "";
     newPassword.value = "";
     newPasswordAgain.value = "";
+    window.location.reload();
   } else if (response) {
     toast.error(`${response.message}`, {
       position: POSITION.TOP_CENTER,

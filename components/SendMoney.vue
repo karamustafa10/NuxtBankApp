@@ -11,7 +11,9 @@
       :options="
         getCardWithIdStore.cards.map((card) => ({
           ...card,
-          cardName: `${card.cardName} ( ${Number(card.cardAmount).toFixed(2)}$ )`,
+          cardName: `${card.cardName} ( ${Number(card.cardAmount).toFixed(
+            2
+          )}$ )`,
         }))
       "
     />
@@ -94,12 +96,24 @@ const sendMoney = async () => {
     data.transferAmount,
     data.receiverId
   );
-  toast.success(`${response}`, {
-    position: POSITION.TOP_CENTER,
-    // onClose: () => {
-    //   window.location.reload();
-    // },
-  });
+
+  if (response === "Money sent successfully!") {
+    toast.success(`${response}`, {
+      position: POSITION.TOP_CENTER,
+    });
+    await userInfoStore.fetchUserInfo();
+    await getCardWithIdStore.fetchCardWithId();
+    await getAllUsersStore.fetchAllUsers();
+    await getTransactionStore.fetchTransactions();
+    enterAmountNormal.value = null;
+    cardSelectedNormal.value = undefined;
+    personSelected.value = undefined;
+  } else {
+    toast.error(`${response}`, {
+      position: POSITION.TOP_CENTER,
+    });
+  }
+
   await userInfoStore.fetchUserInfo();
   await getCardWithIdStore.fetchCardWithId();
   await getAllUsersStore.fetchAllUsers();

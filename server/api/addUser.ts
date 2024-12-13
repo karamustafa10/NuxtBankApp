@@ -40,10 +40,20 @@ export default defineEventHandler(async (event) => {
       };
     }
 
+    // Capitalize the first letter of each part of the first name
+    const capitalize = (name: string) => {
+      return name
+        .split(" ")
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ");
+    };
+
+    const capitalizedFirstName = capitalize(firstName);
+
     // Create new user
     const user = await prisma.user.create({
       data: {
-        firstName,
+        firstName: capitalizedFirstName,
         lastName: lastName.toUpperCase(),
         phone: BigInt(phone),
         mail,

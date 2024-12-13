@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { ca } from "date-fns/locale";
 
 const prisma = new PrismaClient();
 
@@ -16,6 +17,13 @@ export default defineEventHandler(async (event) => {
     newPasswordAgain,
   } = body;
 
+  const capitalize = (name: string) => {
+    return name
+      .split(" ")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+  };
+
   let isPasswordValid = false;
   let isPasswordChanged = false;
 
@@ -28,17 +36,48 @@ export default defineEventHandler(async (event) => {
 
     if (user) {
       if (oldPassword === "" && newPassword === "" && newPasswordAgain === "") {
+        const capitalizedFirstName = capitalize(firstName);
         await prisma.user.update({
           where: {
             id: id,
           },
           data: {
-            firstName: firstName,
+            firstName: capitalizedFirstName,
             lastName: lastName,
             mail: mail,
             phone: parseInt(phone),
           },
         });
+
+        await prisma.card.updateMany({
+          where: {
+            userId: id,
+            type: "debit",
+          },
+          data: {
+            cardName: `${capitalizedFirstName} debit ridex card`,
+          },
+        });
+
+        await prisma.card.updateMany({
+          where: {
+            userId: id,
+            type: "credit",
+          },
+          data: {
+            cardName: `${capitalizedFirstName} credit ridex card`,
+          },
+        });
+
+        await prisma.transfer.updateMany({
+          where: {
+            incomingAccountId: id,
+          },
+          data: {
+            transferDetail: `Money transfer to ${capitalizedFirstName} ${lastName.slice(0,1)}.`,
+          },
+        });
+
         return { success: true, message: "User Info changed successfully!" };
       }
     }
@@ -83,12 +122,13 @@ export default defineEventHandler(async (event) => {
         newPassword === newPasswordAgain
       ) {
         isPasswordChanged = true;
+        const capitalizedFirstName = capitalize(firstName);
         await prisma.user.update({
           where: {
             id: id,
           },
           data: {
-            firstName: firstName,
+            firstName: capitalizedFirstName,
             lastName: lastName,
             mail: mail,
             phone: parseInt(phone),
