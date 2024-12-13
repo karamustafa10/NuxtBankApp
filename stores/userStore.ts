@@ -7,12 +7,14 @@ import { useToast, POSITION } from "vue-toastification";
 export const UserInfoStore = defineStore("userInfo", () => {
   const toast = useToast();
   const userId = ref<number | undefined>();
+  const userRole = ref<string | undefined>();
 
   const fetchUserInfo = async () => {
     try {
       const response = (await $fetch("/api/userInfo")) as any;
       if (response?.success && response?.userId) {
         userId.value = response.userId;
+        userRole.value = response.userRole;
       }
     } catch (error) {
       console.error("Error fetching user info:", error);
@@ -33,7 +35,7 @@ export const UserInfoStore = defineStore("userInfo", () => {
     }
   };
 
-  return { userId, fetchUserInfo, checkSessionCookie };
+  return { userId, userRole, fetchUserInfo, checkSessionCookie };
 });
 
 export const GetUserWithIdStore = defineStore("getUserWithId", () => {

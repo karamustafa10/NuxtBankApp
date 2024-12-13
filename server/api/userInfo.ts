@@ -17,7 +17,11 @@ export default defineEventHandler(async (event) => {
     const decodedToken = jwt.verify(cookies.session, SECRET_KEY);
     // 'decodedToken' mevcut olduğunda döndürülür
     if (decodedToken) {
-      return { success: true, userId: (decodedToken as jwt.JwtPayload).id };
+      return {
+        success: true,
+        userId: (decodedToken as jwt.JwtPayload).id,
+        userRole: (decodedToken as jwt.JwtPayload).role,
+      };
     } else {
       // 'decodedToken' eksikse hata mesajı döndürülür
       setCookie(event, "session", "", {

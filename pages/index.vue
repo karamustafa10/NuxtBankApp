@@ -1,5 +1,8 @@
 <template>
-  <div class="w-[100%] h-[92vh]">
+  <div
+    v-if="userInfoStore.$state.userRole === 'user'"
+    class="w-[100%] h-[92vh]"
+  >
     <div class="flex w-[100%] h-[92vh]">
       <div class="w-[25%] p-[1%] pl-[2%]">
         <div class="h-[25%] flex flex-col justify-center p-0 mb-2">
@@ -36,9 +39,23 @@
       </div>
     </div>
   </div>
+  <div v-else class="w-[100%] h-[92vh]">
+    <AdminTransactions />
+  </div>
 </template>
 
 <script setup lang="ts">
+import { UserInfoStore } from "@/stores/userStore";
+
+const userInfoStore = UserInfoStore();
+
+onMounted(async () => {
+  await Promise.all([
+    userInfoStore.fetchUserInfo(),
+    userInfoStore.checkSessionCookie(),
+  ]);
+});
+
 useHead({
   title: "Ridex | Future Bank App",
 });

@@ -39,3 +39,32 @@ export const GetTransactionStore = defineStore("transaction", () => {
     fetchTransactions,
   };
 });
+
+export const GetAllTransactionsStore = defineStore("getAllTransactions", () => {
+  const transactions = ref<Transaction[]>([]);
+
+  const fetchAllTransactions = async () => {
+    try {
+      const response = await $fetch("/api/getAllTransactions");
+
+      if (response && "list" in response) {
+        transactions.value = response.list.map((transaction: any) => ({
+          user: transaction.user,
+          date: transaction.date.toString(),
+          number: transaction.number,
+          state: transaction.state,
+          amount: transaction.amount,
+          detail: transaction.detail,
+          cardType: transaction.cardType,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    }
+  };
+
+  return {
+    transactions,
+    fetchAllTransactions,
+  };
+});
