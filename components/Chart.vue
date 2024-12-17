@@ -1,9 +1,9 @@
 <template>
-  <Line id="my-chart-id" :options="chartOptions" :data="chartData" />
+  <Bar :data="data" :options="options" />
 </template>
 
 <script setup lang="ts">
-import { Line } from "vue-chartjs";
+import { GetTransactionStore } from "@/stores/transactionStore";
 import {
   Chart as ChartJS,
   Title,
@@ -12,55 +12,81 @@ import {
   BarElement,
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
 } from "chart.js";
+import { Bar } from "vue-chartjs";
 
-// Gerekli Chart.js bileşenlerini kaydediyoruz
 ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
 );
 
-const chartData = ref({
-  labels: [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ],
-  datasets: [
-    {
-      label: "Total",
-      data: [65, 59, 80, 81, 56, 55, 65, 67, 78, 90, 69, 67],
-      fill: false,
-      borderColor: "#0177fb",
-      tension: 0.4,
-    },
-  ],
+const getTransactionStore = GetTransactionStore();
+
+onMounted(async () => {
+  await getTransactionStore.fetchTransactions();
+
+  const incomingAmounts = Array(14).fill(0);
+  const outgoingAmounts = Array(14).fill(0);
+
+  // Process transactions
+  getTransactionStore.transactions.forEach((transaction) => {
+    const transactionDate = new Date(transaction.date);
+
+    if (!isNaN(transactionDate.getTime())) { // Valid date check
+      const daysAgo = Math.floor(
+        (new Date().getTime() - transactionDate.getTime()) / (1000 * 60 * 60 * 24)
+      );
+
+      if (daysAgo < 14) {
+        const amount = Number(transaction.amount); // Convert to number
+        if (amount > 0) {
+          incomingAmounts[13 - daysAgo] += amount; // Incoming
+        } else if (amount < 0) {
+          outgoingAmounts[13 - daysAgo] += Math.abs(amount); // Outgoing
+        }
+      }
+    }
+  });
+
+  // Update chart data reactively
+  data.value = {
+    ...data.value,
+    datasets: [
+      { ...data.value.datasets[0], data: incomingAmounts },
+      { ...data.value.datasets[1], data: outgoingAmounts },
+    ],
+  };
 });
 
-const chartOptions = ref({
+// Reactive data
+const data = ref<{ labels: string[]; datasets: { label: string; backgroundColor: string; data: number[] }[] }>(
+  {
+    labels: Array.from({ length: 14 }, (_, i) => {
+      const date = new Date();
+      date.setDate(date.getDate() - (13 - i));
+      return date.toLocaleDateString();
+    }),
+    datasets: [
+      {
+        label: "Income",
+        backgroundColor: "green",
+        data: [],
+      },
+      {
+        label: "Outcome",
+        backgroundColor: "red",
+        data: [],
+      },
+    ],
+  }
+);
+
+const options = {
   responsive: true,
-  scales: {
-    y: {
-      min: 50, // Y ekseni için minimum değer
-      max: 100, // Y ekseni için maksimum değer
-    },
-  },
-});
+  maintainAspectRatio: false,
+};
 </script>
