@@ -44,9 +44,9 @@ onMounted(async () => {
       if (daysAgo < 14) {
         const amount = Number(transaction.amount); // Convert to number
         if (amount > 0) {
-          incomingAmounts[13 - daysAgo] += amount; // Incoming
+          incomingAmounts[12 - daysAgo] += amount; // Incoming
         } else if (amount < 0) {
-          outgoingAmounts[13 - daysAgo] += Math.abs(amount); // Outgoing
+          outgoingAmounts[12 - daysAgo] += Math.abs(amount); // Outgoing
         }
       }
     }
