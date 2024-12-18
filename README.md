@@ -1,6 +1,16 @@
-# Nuxt Minimal Starter
+# NuxtBankApp
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+This project is a Nuxt.js application for managing banking operations. It includes various features such as user authentication, transaction management, and more.
+
+## Table of Contents
+
+- [Setup](#setup)
+- [Development Server](#development-server)
+- [Production](#production)
+- [File Structure](#file-structure)
+- [Plugins](#plugins)
+- [API Endpoints](#api-endpoints)
+- [Deployment](#deployment)
 
 ## Setup
 
@@ -72,4 +82,26 @@ yarn preview
 bun run preview
 ```
 
+## File Structure
+
+- `components/`: Vue components used in the application.
+- `pages/`: Application pages.
+- `plugins/`: Nuxt.js plugins.
+- `server/`: API endpoints and server-side logic.
+- `stores/`: Pinia stores for state management.
+- `prisma/`: Database schema and migrations.
+
+## Plugins
+
+- `toastification.js`: Plugin for toast notifications using `vue-toastification`.
+
+## API Endpoints
+
+- `getAllTransactions.ts`: Fetches all transactions.
+- `getTransactions.ts`: Fetches transactions for a specific account.
+- `getUser.ts`: Handles user authentication and session management.
+
+## Deployment
+
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
