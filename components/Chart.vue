@@ -14,6 +14,7 @@ import {
   LinearScale,
 } from "chart.js";
 import { Bar } from "vue-chartjs";
+import { watch } from "vue";
 
 ChartJS.register(
   CategoryScale,
@@ -25,10 +26,9 @@ ChartJS.register(
 );
 
 const getTransactionStore = GetTransactionStore();
+const transactionCount = ref(0);
 
-onUpdated(async () => {
-  await getTransactionStore.fetchTransactions();
-
+const updateChartData = () => {
   const incomingAmounts = Array(14).fill(0);
   const outgoingAmounts = Array(14).fill(0);
 
@@ -63,46 +63,23 @@ onUpdated(async () => {
       { ...data.value.datasets[1], data: outgoingAmounts },
     ],
   };
-});
+};
 
 onMounted(async () => {
   await getTransactionStore.fetchTransactions();
-
-  const incomingAmounts = Array(14).fill(0);
-  const outgoingAmounts = Array(14).fill(0);
-
-  // Process transactions
-  getTransactionStore.transactions.forEach((transaction) => {
-    const transactionDate = new Date(transaction.date);
-
-    if (!isNaN(transactionDate.getTime())) {
-      // Calculate the number of days ago the transaction occurred
-      const daysAgo = Math.floor(
-        (new Date().setHours(0, 0, 0, 0) -
-          transactionDate.setHours(0, 0, 0, 0)) /
-          (1000 * 60 * 60 * 24)
-      );
-
-      if (daysAgo >= 0 && daysAgo < 14) {
-        const amount = Number(transaction.amount); // Convert to number
-        if (amount > 0) {
-          incomingAmounts[13 - daysAgo] += amount; // Incoming
-        } else if (amount < 0) {
-          outgoingAmounts[13 - daysAgo] += Math.abs(amount); // Outgoing
-        }
-      }
-    }
-  });
-
-  // Update chart data reactively
-  data.value = {
-    ...data.value,
-    datasets: [
-      { ...data.value.datasets[0], data: incomingAmounts },
-      { ...data.value.datasets[1], data: outgoingAmounts },
-    ],
-  };
+  transactionCount.value = getTransactionStore.transactions.length;
+  updateChartData();
 });
+
+watch(
+  () => getTransactionStore.transactions.length,
+  async (newLength, oldLength) => {
+    if (newLength > oldLength) {
+      await getTransactionStore.fetchTransactions();
+      updateChartData();
+    }
+  }
+);
 
 // Reactive data
 const data = ref<{

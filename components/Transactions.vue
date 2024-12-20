@@ -310,9 +310,15 @@ const filteredTransactions = computed(() => {
   });
 });
 
-onUpdated(async () => {
-  await getTransactionStore.fetchTransactions();
-});
+watch(
+  () => getTransactionStore.transactions,
+  async (newTransactions, oldTransactions) => {
+    if (newTransactions.length < oldTransactions.length) {
+      console.log("Transaction value decreased");
+      await getTransactionStore.fetchTransactions();
+    }
+  }
+);
 
 onMounted(async () => {
   await getTransactionStore.fetchTransactions();
