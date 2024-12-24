@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        BigInt     @id @default(autoincrement())
+  role      String     @default("user") @db.VarChar(10)
+  firstName String     @db.VarChar(50)
+  lastName  String     @db.VarChar(50)
+  phone     BigInt     @unique
+  mail      String     @unique @db.VarChar(100)
+  password  String
+  createdAt DateTime   @default(now())
+  // Relationship: One-to-Many with Card, Transfer, and Payment
+  cards     Card[]
+  payments  Payment[]
+  transfers Transfer[]
+}
+
+model Card {
+  cardId            BigInt     @id @default(autoincrement())
+  type              String     @db.VarChar(10)
+  cardNumber        BigInt     @unique
+  cardName          String     @db.VarChar(50)
+  validDate         DateTime
+  secNumber         Int
+  cardAmount        Float
+  cardDebt          Float
+  userId            BigInt
+  user              User       @relation(fields: [userId], references: [id])
+  outgoingTransfers Transfer[] @relation("OutgoingCardTransfers")
+  incomingTransfers Transfer[] @relation("IncomingCardTransfers")
+  payments          Payment[]
+}
+
+model Transfer {
+  id                  BigInt   @id @default(autoincrement())
+  incomingAccountId   BigInt?
+  incomingCardNumber  BigInt
+  outcomingAccountId  BigInt?
+  outcomingCardNumber BigInt
+  transferDate        DateTime @default(now())
+  transferAmount      Float
+  transferDetail      String?  @db.VarChar(100)
+  transferStatus      String   @db.VarChar(20)
+  userId              BigInt?
+  user                User?    @relation(fields: [userId], references: [id])
+  incomingCard        Card     @relation("IncomingCardTransfers", fields: [incomingCardNumber], references: [cardNumber])
+  outcomingCard       Card     @relation("OutgoingCardTransfers", fields: [outcomingCardNumber], references: [cardNumber])
+}
+
+model Payment {
+  id             BigInt   @id @default(autoincrement())
+  accountId      BigInt
+  cardNumber     BigInt
+  receiverNumber BigInt
+  paymentDate    DateTime @default(now())
+  paymentAmount  Float
+  paymentDetail  String?  @db.VarChar(100)
+  paymentStatus  String   @db.VarChar(20)
+  userId         BigInt?
+  user           User?    @relation(fields: [userId], references: [id])
+  Card           Card?    @relation(fields: [cardCardId], references: [cardId])
+  cardCardId     BigInt?
+}
