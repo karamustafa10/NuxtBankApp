@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex flex-row items-center justify-between">
-      <div class="font-semibold">Recent Contacts</div>
+      <div class="font-semibold">{{ $t('recent_contacts') }}</div>
       <div class="mr-[5%]">
         <UButton class="editButton" variant="ghost" icon="i-heroicons-pencil" />
         <UButton
@@ -11,7 +11,7 @@
         />
       </div>
     </div>
-    <div class="text-xs text-gray-500">18 Recipients</div>
+    <div class="text-xs text-gray-500">18 {{ $t('recipients') }}</div>
     <div class="mt-[5%] flex items-center justify-between">
       <div>
         <UAvatarGroup size="xs" :max="5">
@@ -34,7 +34,7 @@
     </div>
     <div class="rounded-lg shadow-2xl mt-[5%] mb-[1%] pl-[5%] pt-[3%]">
       <div class="text-gray-500">
-        Group<span class="text-black"> Party</span>
+        {{ $t('group_party') }}
       </div>
       <div class="mt-[5%] flex items-center justify-between mr-[5%]">
         <div>

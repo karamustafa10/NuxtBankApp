@@ -3,13 +3,13 @@
     <div class="flex flex-col justify-center items-center">
       <div class="flex justify-center mb-[2%] w-[100%] ocv">
         <div class="font-semibold text-2xl w-[100%] text-center">
-          All Transactions of All Users
+          {{ $t("all_transactions_of_all_users") }}
         </div>
       </div>
       <div class="flex w-[100%] items-center justify-around mb-[2%]">
         <div class="flex w-[30%] justify-center items-center">
           <div class="text-center text-xs text-gray-500 mr-[2%]">
-            Select Date :
+            {{ $t("select_date") }} :
           </div>
           <div>
             <UPopover :popper="{ placement: 'bottom-start' }">
@@ -18,8 +18,8 @@
                 color="blue"
                 :style="{ width: '100%', height: '4vh', fontSize: '70%' }"
               >
-                {{ format(selectedDate.start, "d MMM, yyy") }} -
-                {{ format(selectedDate.end, "d MMM, yyy") }}
+                {{ format(selectedDate.start, "dd/MM/yyy") }} -
+                {{ format(selectedDate.end, "dd/MM/yyy") }}
               </UButton>
 
               <template #panel="{ close }">
@@ -52,15 +52,15 @@
         </div>
         <div class="flex w-[15%] justify-center items-center">
           <div>
-            <UInput v-model="searchName" placeholder="Search in detail..." />
+            <UInput v-model="searchName" :placeholder="t('search_in_detail')" />
           </div>
         </div>
         <div class="flex w-[30%] justify-center items-center">
           <div class="text-center text-xs text-gray-500 mr-[2%]">
-            Select Money Amount :
+            {{ $t("select_money_amount") }} :
           </div>
           <div class="text-xs mr-[2%] text-blue-500 text-center">
-            min ${{ minTrasferAmount }}
+            {{ $t("min") }} ${{ minTrasferAmount }}
           </div>
           <div class="w-[50%]">
             <URange
@@ -75,19 +75,21 @@
             </div>
           </div>
           <div class="text-xs ml-[2%] text-blue-500 text-center">
-            max ${{ maxTrasferAmount }}
+            {{ $t("max") }} ${{ maxTrasferAmount }}
           </div>
         </div>
         <div class="flex w-[20%] justify-center items-center">
-          <div class="mr-[2%] text-xs text-gray-500">Choose a Card :</div>
+          <div class="mr-[2%] text-xs text-gray-500">
+            {{ $t("choose_a_card") }} :
+          </div>
           <div>
             <URadioGroup
               color="blue"
               :ui-radio="{ label: 'text-blue-500 dark:tw-text-blue-500' }"
               :options="[
-                { value: 'debit', label: 'debit' },
-                { value: 'credit', label: 'credit' },
-                { value: 'all', label: 'all' },
+                { value: 'debit', label: t('debit') },
+                { value: 'credit', label: t('credit') },
+                { value: 'all', label: t('all') },
               ]"
               v-model="selectedCard"
             />
@@ -121,7 +123,7 @@
                 ? 'bg-green-500 bg-opacity-10 text-green-500'
                 : 'bg-orange-500 bg-opacity-10 text-orange-500',
             ]"
-            >{{ row.state }}</span
+            >{{ row.state === "success" ? $t("success") : $t("pending") }}</span
           ></template
         >
         <template #date-data="{ row }"
@@ -146,6 +148,9 @@
 <script setup lang="ts">
 import { GetAllTransactionsStore } from "@/stores/transactionStore";
 import { sub, format, isSameDay, type Duration } from "date-fns";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const getAllTransactions = GetAllTransactionsStore();
 const searchName = ref("");
@@ -155,12 +160,12 @@ const minTrasferAmount = ref(0);
 const selectedCard = ref("all");
 
 const columns = [
-  { label: "Transaction", key: "user", sortable: false },
-  { label: "Date", key: "date", sortable: true },
-  { label: "Detail", key: "detail", sortable: false },
-  { label: "Card Number", key: "number", sortable: true },
-  { label: "Amount", key: "amount", sortable: true },
-  { label: "Status", key: "state", sortable: true },
+  { label: t("transaction"), key: "user", sortable: false },
+  { label: t("date"), key: "date", sortable: true },
+  { label: t("detail"), key: "detail", sortable: false },
+  { label: t("card_number"), key: "number", sortable: true },
+  { label: t("amount"), key: "amount", sortable: true },
+  { label: t("status"), key: "state", sortable: true },
 ];
 
 const ranges = [

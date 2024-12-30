@@ -122,7 +122,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
-      message: `Welcome ${user.firstName}!`,
+      message: `, ${user.firstName}!`,
       userMail: user.mail,
     };
   } catch (error) {

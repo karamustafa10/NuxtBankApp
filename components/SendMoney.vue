@@ -1,5 +1,5 @@
 <template>
-  <div class="text-lg mb-[6%] font-semibold">Send Money</div>
+  <div class="text-lg mb-[6%] font-semibold">{{ $t("send_money") }}</div>
   <div class="w-[100%]">
     <USelectMenu
       color="blue"
@@ -7,7 +7,7 @@
       value-attribute="type"
       option-attribute="cardName"
       class="w-[100%]"
-      placeholder="Select a card"
+      :placeholder="$t('select_a_card')"
       :options="
         getCardWithIdStore.cards.map((card) => ({
           ...card,
@@ -24,7 +24,7 @@
       type="number"
       class="w-[100%]"
       v-model="enterAmountNormal"
-      placeholder="Enter Amount..."
+      :placeholder="$t('enter_amount')"
     />
   </div>
   <div class="w-[100%] mt-[4%]">
@@ -33,7 +33,7 @@
         color="blue"
         class="w-[100%]"
         v-model="personSelected"
-        placeholder="Select a person"
+        :placeholder="$t('select_a_person')"
         value-attribute="id"
         option-attribute="name"
         :options="
@@ -49,7 +49,7 @@
     <UButton
       @click="sendMoney"
       class="w-[100%] h-[6.5vh] flex justify-center items-center sendButton"
-      >Send
+      >{{ $t("send") }}
     </UButton>
   </div>
 </template>
@@ -61,6 +61,9 @@ import "@/stores/transactionStore";
 import type { Card } from "@/models/card";
 import type { People } from "@/models/people";
 import { useToast, POSITION } from "vue-toastification";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const toast = useToast();
 
@@ -98,7 +101,7 @@ const sendMoney = async () => {
   );
 
   if (response === "Money sent successfully!") {
-    toast.success(`${response}`, {
+    toast.success(t("money_sent_successfully"), {
       position: POSITION.TOP_CENTER,
     });
     await userInfoStore.fetchUserInfo();

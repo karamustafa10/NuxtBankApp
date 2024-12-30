@@ -1,6 +1,8 @@
 <template>
-  <div class="flex flex-col w-[100%] rounded-lg h-[100%] bg-white border-2 p-[1%]">
-    <div class="font-semibold text-lg pb-2 pl-2">Statics</div>
+  <div
+    class="flex flex-col w-[100%] rounded-lg h-[100%] bg-white border-2 p-[1%]"
+  >
+    <div class="font-semibold text-lg pb-2 pl-2">{{ $t("statistics") }}</div>
     <div class="flex w-[100%] justify-around">
       <div class="flex items-center w-[20%]">
         <div
@@ -10,7 +12,7 @@
         </div>
         <div class="ml-[4%] text-xs">
           <div class="font-semibold">220k</div>
-          <div>Customers</div>
+          <div>{{ $t("customers") }}</div>
         </div>
       </div>
       <div class="flex items-center w-[20%]">
@@ -24,7 +26,7 @@
         </div>
         <div class="ml-[4%] text-xs">
           <div class="font-semibold">230k</div>
-          <div>Remittance</div>
+          <div>{{ $t("remittance") }}</div>
         </div>
       </div>
       <div class="flex items-center w-[20%]">
@@ -35,7 +37,7 @@
         </div>
         <div class="ml-[4%] text-xs">
           <div class="font-semibold">270k</div>
-          <div>Donations</div>
+          <div>{{ $t("donations") }}</div>
         </div>
       </div>
       <div class="flex items-center w-[20%]">
@@ -46,7 +48,7 @@
         </div>
         <div class="ml-[4%] text-xs">
           <div class="font-semibold">130k</div>
-          <div>WatchTime</div>
+          <div>{{ $t("watch_time") }}</div>
         </div>
       </div>
     </div>

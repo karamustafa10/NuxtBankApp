@@ -20,7 +20,7 @@
             @click="navigateTo(button.url)"
           />
         </div>
-        <div class="w-[95%] space-y-2 mb-[5vh] ml-[5%]">
+        <div class="w-[95%] space-y-2 ml-[5%]">
           <UButton
             v-for="(button, index) in footerButtons"
             :key="index"
@@ -34,6 +34,46 @@
             :trailing="false"
             @click="navigateTo(button.url)"
           />
+          <div>
+            <div class="ml-[5%] mb-[5%] text-gray-400">
+              {{ $t("select_a_language") }} :
+            </div>
+            <div class="flex justify-around mb-[10%]">
+              <div class="flex justify-center w-[20%]">
+                <UButton
+                  color="blue"
+                  variant="ghost"
+                  class="flex w-[100%] justify-center"
+                  @click="changeLocale('tr')"
+                  ><img
+                    src="https://cdn-icons-png.flaticon.com/512/197/197518.png"
+                    alt="tr"
+                /></UButton>
+              </div>
+              <div class="flex justify-center w-[20%]">
+                <UButton
+                  color="blue"
+                  variant="ghost"
+                  class="flex w-[100%] justify-center"
+                  @click="changeLocale('en')"
+                  ><img
+                    src="https://cdn-icons-png.flaticon.com/512/197/197484.png"
+                    alt="en"
+                /></UButton>
+              </div>
+              <div class="flex justify-center w-[20%]">
+                <UButton
+                  color="blue"
+                  variant="ghost"
+                  class="flex w-[100%] justify-center"
+                  @click="changeLocale('fr')"
+                  ><img
+                    src="https://cdn-icons-png.flaticon.com/512/197/197560.png"
+                    alt="fr"
+                /></UButton>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -56,7 +96,7 @@
                     class="mr-[3%]"
                     color="blue"
                     variant="outline"
-                    placeholder="Search..."
+                    :placeholder="$t('search')"
                   />
                   <UButton
                     class="search-button"
@@ -80,7 +120,7 @@
             <template #panel>
               <div class="p-4">
                 <Placeholder class="h-20 w-48" />
-                <div>No notifications here.</div>
+                <div>{{ $t("no_notif_here") }}</div>
               </div>
             </template>
           </UPopover>
@@ -95,7 +135,7 @@
                   <div>
                     <UButton
                       class="w-[100%] editprofile-button"
-                      label="Edit Profile"
+                      :label="$t('edit_profile')"
                       @click="editProfile, (isEditProfileOpen = true)"
                     />
                     <UModal
@@ -107,7 +147,7 @@
                           <div
                             class="text-2xl font-semibold text-center mb-[5%]"
                           >
-                            Edit Profile
+                            {{ $t("edit_profile") }}
                           </div>
                           <div>
                             <UButton
@@ -117,21 +157,21 @@
                             />
                           </div>
                         </div>
-                        <div class="flex mb-[0.5%]">
-                          <div class="text-xs mr-[42%]">Firstname</div>
-                          <div class="text-xs">Lastname</div>
-                        </div>
                         <div class="flex mb-[3%]">
                           <div class="mr-[6%] w-[47%]">
+                            <div class="text-xs mr-[42%] ml-[1%] mb-[1%]">
+                              {{ $t("first_name") }}
+                            </div>
                             <UInput color="blue" v-model="editFirstName" />
                           </div>
                           <div class="w-[47%]">
+                            <div class="text-xs ml-[1%] mb-[1%]">{{ $t("last_name") }}</div>
                             <UInput color="blue" v-model="editLastName" />
                           </div>
                         </div>
                         <div class="flex">
-                          <div class="text-xs mb-[0.5%] mr-[48.5%]">Mail</div>
-                          <div class="text-xs mb-[0.5%]">Phone</div>
+                          <div class="text-xs mb-[0.5%] mr-[45.5%]">E-Mail</div>
+                          <div class="text-xs mb-[0.5%]">{{ $t("phone") }}</div>
                         </div>
                         <div class="flex mb-[3%]">
                           <div class="w-[47%] mr-[6%]">
@@ -141,7 +181,9 @@
                             <UInput color="blue" v-model="editPhone" />
                           </div>
                         </div>
-                        <div class="text-xs mb-[0.5%]">Old Password</div>
+                        <div class="text-xs mb-[0.5%]">
+                          {{ $t("old_password") }}
+                        </div>
                         <div class="mb-[3%]">
                           <UInput
                             color="blue"
@@ -149,7 +191,9 @@
                             v-model="oldPassword"
                           />
                         </div>
-                        <div class="text-xs mb-[0.5%]">New Password</div>
+                        <div class="text-xs mb-[0.5%]">
+                          {{ $t("new_password") }}
+                        </div>
                         <div class="mb-[3%]">
                           <UInput
                             color="blue"
@@ -157,7 +201,9 @@
                             v-model="newPassword"
                           />
                         </div>
-                        <div class="text-xs mb-[0.5%]">New Password Again</div>
+                        <div class="text-xs mb-[0.5%]">
+                          {{ $t("new_password_again") }}
+                        </div>
                         <div class="mb-[5%]">
                           <UInput
                             color="blue"
@@ -168,7 +214,7 @@
                         <div class="flex justify-center">
                           <UButton
                             color="blue"
-                            label="Edit Profile"
+                            :label="$t('edit_profile')"
                             @click="editProfile"
                           />
                         </div>
@@ -178,7 +224,7 @@
                   <div class="mt-[5%]">
                     <UButton
                       class="w-[100%] logout-button text-center"
-                      label="Log Out"
+                      :label="$t('log_out')"
                       @click="handleLogout"
                     />
                   </div>
@@ -198,6 +244,14 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 import { useToast, POSITION } from "vue-toastification";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+
+const changeLocale = (locale: string) => {
+  localStorage.setItem("locale", locale);
+  window.location.reload();
+};
 
 let userIdString;
 const toast = useToast();
@@ -253,29 +307,33 @@ const navigateTo = (url: string) => {
 };
 
 const buttons = [
-  { label: "Dashboard", url: "", icon: "i-heroicons-home" },
-  { label: "Invoices", url: "invoices", icon: "i-heroicons-receipt-percent" },
+  { label: t("dashboard"), url: "", icon: "i-heroicons-home" },
   {
-    label: "Messages",
+    label: t("invoices"),
+    url: "invoices",
+    icon: "i-heroicons-receipt-percent",
+  },
+  {
+    label: t("messages"),
     url: "messages",
     icon: "i-heroicons-chat-bubble-left-right",
   },
-  { label: "My Wallets", url: "my-wallets", icon: "i-heroicons-wallet" },
-  { label: "Activity", url: "activity", icon: "i-heroicons-chart-pie" },
+  { label: t("my_wallets"), url: "my-wallets", icon: "i-heroicons-wallet" },
+  { label: t("activity"), url: "activity", icon: "i-heroicons-chart-pie" },
   {
-    label: "Analytics",
+    label: t("analytics"),
     url: "analytics",
     icon: "i-heroicons-chart-bar-square",
   },
 ];
 const footerButtons = [
   {
-    label: "Get Help",
+    label: t("get_help"),
     url: "get-help",
     icon: "i-heroicons-question-mark-circle",
   },
   {
-    label: "Settings",
+    label: t("settings"),
     url: "settings",
     icon: "i-heroicons-adjustments-horizontal",
   },
@@ -285,7 +343,7 @@ const handleLogout = async () => {
   try {
     await $fetch("/api/logout", { method: "POST" });
     router.push("/sign-in"); // Giriş sayfasına yönlendirme
-    toast.info(`Logged out successfully!`, {
+    toast.info(t("logged_out_successfully"), {
       position: POSITION.TOP_CENTER,
     });
   } catch (error) {
@@ -309,11 +367,11 @@ const editProfile = async () => {
   });
 
   if (response && response.success) {
-    toast.success(`Profile edited successfully!`, {
+    toast.success(t("profile_edited_successfully"), {
       position: POSITION.TOP_CENTER,
     });
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     isEditProfileOpen.value = false;
     oldPassword.value = "";
@@ -325,7 +383,7 @@ const editProfile = async () => {
       position: POSITION.TOP_CENTER,
     });
   } else {
-    toast.error(`An unknown error occurred.`, {
+    toast.error(t("an_unknown_error_occurred"), {
       position: POSITION.TOP_CENTER,
     });
   }

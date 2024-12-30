@@ -1,17 +1,19 @@
 <template>
-    <div class="w-[100%] h-[90vh] flex justify-center items-center">Work in Progress...</div>
+  <div class="w-[100%] h-[90vh] flex justify-center items-center">
+    {{ $t("work_in_progress") }}
+  </div>
 </template>
 
 <script setup lang="ts">
-useHead({
-    title: 'Ridex | Settings',
-    meta: [
-        { name: 'description', content: 'My amazing site.' }
-    ]
-})
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
+
+useHead({
+  title: "Ridex | " + `${t("settings")}`,
+});
 definePageMeta({
-    colorMode: "_light" as "light" | "dark",
-    middleware: 'auth-required'
-})
+  colorMode: "_light" as "light" | "dark",
+  middleware: "auth-required",
+});
 </script>

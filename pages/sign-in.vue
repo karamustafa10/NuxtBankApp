@@ -9,11 +9,13 @@
         <div class="w-[50%] ml-[15%] mt-[10%]">
           <Logo />
         </div>
-        <div class="ml-[15%] mt-[3%] text-3xl font-semibold">Sign in</div>
+        <div class="ml-[15%] mt-[3%] text-3xl font-semibold">
+          {{ $t("sign_in") }}
+        </div>
         <div class="ml-[15%] mt-[3%] text-xs">
-          Don't have an account?
+          {{ $t("dont_have_account") }}
           <span class="text-[#0177fb] underline"
-            ><a href="/sign-up">Create Now!</a></span
+            ><a href="/sign-up">{{ $t("create_now") }}</a></span
           >
         </div>
         <div class="ml-[15%] mt-[7%]">
@@ -26,7 +28,7 @@
               :ui="{ variant: { outline: 'bg-white' } }"
             />
           </div>
-          <div class="text-xs mt-[5%]">Password</div>
+          <div class="text-xs mt-[5%]">{{ $t("password") }}</div>
           <div class="w-[80%] mt-[1%]">
             <UInput
               type="password"
@@ -42,10 +44,10 @@
           >
             <div class="flex items-center w-[35%]">
               <UCheckbox color="blue" name="rememberMe" v-model="rememberMe" />
-              <div class="ml-[2%]">Remember me</div>
+              <div class="ml-[2%]">{{ $t("remember_me") }}</div>
             </div>
             <div class="text-[#0177fb] underline">
-              <a href="/reset-password">Forgot Password?</a>
+              <a href="/reset-password">{{ $t("forgot_password") }}</a>
             </div>
           </div>
           <div class="mt-[10%] w-[80%]">
@@ -54,13 +56,13 @@
               size="sm"
               color="blue"
               variant="solid"
-              label="Sign in"
+              :label="$t('sign_in')"
               @click="handleSignIn"
             />
           </div>
           <div class="w-[80%] mt-[5%]">
             <UDivider
-              label="or"
+              :label="$t('or')"
               type="solid"
               size="xs"
               :ui="{ border: { base: 'border-blue-400' } }"
@@ -72,7 +74,7 @@
               size="sm"
               color="white"
               variant="solid"
-              label="Sign with Google"
+              :label="$t('sign_with_google')"
             />
           </div>
           <div class="mt-[3%] w-[80%] border-2 border-blue-500 rounded-lg">
@@ -81,8 +83,45 @@
               size="sm"
               color="white"
               variant="solid"
-              label="Sign with Facebook"
+              :label="$t('sign_with_facebook')"
             />
+          </div>
+          <div class="flex flex-col w-[60%] justify-center ml-[10%] mt-[5%]">
+            <div class="flex justify-around mb-[10%]">
+              <div class="flex justify-center w-[20%]">
+                <UButton
+                  color="blue"
+                  variant="ghost"
+                  class="flex w-[100%] justify-center"
+                  @click="changeLocale('tr')"
+                  ><img
+                    src="https://cdn-icons-png.flaticon.com/512/197/197518.png"
+                    alt="tr"
+                /></UButton>
+              </div>
+              <div class="flex justify-center w-[20%]">
+                <UButton
+                  color="blue"
+                  variant="ghost"
+                  class="flex w-[100%] justify-center"
+                  @click="changeLocale('en')"
+                  ><img
+                    src="https://cdn-icons-png.flaticon.com/512/197/197484.png"
+                    alt="en"
+                /></UButton>
+              </div>
+              <div class="flex justify-center w-[20%]">
+                <UButton
+                  color="blue"
+                  variant="ghost"
+                  class="flex w-[100%] justify-center"
+                  @click="changeLocale('fr')"
+                  ><img
+                    src="https://cdn-icons-png.flaticon.com/512/197/197560.png"
+                    alt="fr"
+                /></UButton>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -93,7 +132,7 @@
           <div class="mr-[1%]">
             <UIcon name="i-heroicons-link" class="w-4 h-4 text-white" />
           </div>
-          <div class="text-sm text-white">Support</div>
+          <div class="text-sm text-white">{{ $t("support") }}</div>
         </div>
         <div class="px-[15%] py-[10%]">
           <img
@@ -105,7 +144,7 @@
         <div
           class="flex text-center justify-center text-2xl font-semibold text-white"
         >
-          Check your budget with RIDEX!
+          {{ $t("check_y_b_w_r") }}
         </div>
         <div class="flex text-center mt-[2%] p-[2%] text-white">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore
@@ -128,6 +167,9 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast, POSITION } from "vue-toastification";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const mail = ref("");
 const password = ref("");
@@ -139,14 +181,14 @@ const handleSignIn = async () => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!mail.value || !password.value) {
-    toast.error("Both fields must be filled!", {
+    toast.error(t("both_fields_must_be_filled"), {
       position: POSITION.TOP_CENTER,
     });
     return;
   }
 
   if (!emailRegex.test(mail.value)) {
-    toast.error("Please enter a valid email address!", {
+    toast.error(t("please_enter_a_valid_email_address"), {
       position: POSITION.TOP_CENTER,
     });
     return;
@@ -163,15 +205,20 @@ const handleSignIn = async () => {
     });
 
     if (response.success) {
-      //alert(`Welcome back, ${response.firstName}!`);
-      toast.info(`Welcome back, ${response.firstName}!`, {
+      toast.info(`${t("welcome_back")}, ${response.firstName}!`, {
         position: POSITION.TOP_CENTER,
       });
       router.push("/"); // Redirect to the home page or another page
     } else {
-      toast.error(`${response.message}`, {
-        position: POSITION.TOP_CENTER,
-      });
+      if (response.message === "User not found...") {
+        toast.error(`${t("user_not_found")}`, {
+          position: POSITION.TOP_CENTER,
+        });
+      } else if (response.message === "Wrong password...") {
+        toast.error(`${t("wrong_password")}`, {
+          position: POSITION.TOP_CENTER,
+        });
+      }
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -179,16 +226,20 @@ const handleSignIn = async () => {
         position: POSITION.TOP_CENTER,
       });
     } else {
-      toast.error("An unknown error occurred.", {
+      toast.error(t("an_unknown_error_occurred"), {
         position: POSITION.TOP_CENTER,
       });
     }
   }
 };
 
+const changeLocale = (locale: string) => {
+  localStorage.setItem("locale", locale);
+  window.location.reload();
+};
+
 useHead({
-  title: "Ridex | Sign In",
-  meta: [{ name: "description", content: "My amazing site." }],
+  title: "Ridex | " + t("sign_in"),
 });
 
 definePageMeta({

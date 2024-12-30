@@ -1,8 +1,8 @@
 <template>
   <div class="flex justify-between items-center">
-    <div class="font-semibold">Recent Transactions</div>
+    <div class="font-semibold">{{ $t("recent_transactions") }}</div>
     <div class="flex flex-row items-center justify-between w-[11%]">
-      <div>View All</div>
+      <div>{{ $t("view_all") }}</div>
       <UButton
         class="editButton"
         variant="ghost"
@@ -17,7 +17,7 @@
           <div class="flex flex-col justify-center items-center">
             <div class="flex justify-center mb-[2%] w-[100%]">
               <div class="font-semibold text-2xl w-[100%] text-center">
-                All Transactions
+                {{ $t("all_transactions") }}
               </div>
               <div>
                 <UButton
@@ -30,7 +30,7 @@
             <div class="flex w-[100%] items-center justify-around mb-[2%]">
               <div class="flex w-[30%] justify-center items-center">
                 <div class="text-center text-xs text-gray-500 mr-[2%]">
-                  Select Date :
+                  {{ $t("select_date") }} :
                 </div>
                 <div>
                   <UPopover :popper="{ placement: 'bottom-start' }">
@@ -39,8 +39,8 @@
                       color="blue"
                       :style="{ width: '100%', height: '4vh', fontSize: '70%' }"
                     >
-                      {{ format(selectedDate.start, "d MMM, yyy") }} -
-                      {{ format(selectedDate.end, "d MMM, yyy") }}
+                      {{ format(selectedDate.start, "dd/MM/yyyy") }} -
+                      {{ format(selectedDate.end, "dd/MM/yyyy") }}
                     </UButton>
 
                     <template #panel="{ close }">
@@ -75,16 +75,16 @@
                 <div>
                   <UInput
                     v-model="searchName"
-                    placeholder="Search in detail..."
+                    :placeholder="$t('search_in_detail')"
                   />
                 </div>
               </div>
               <div class="flex w-[30%] justify-center items-center">
                 <div class="text-center text-xs text-gray-500 mr-[2%]">
-                  Select Money Amount :
+                  {{ $t("select_money_amount") }} :
                 </div>
                 <div class="text-xs mr-[2%] text-blue-500 text-center">
-                  min ${{ minTrasferAmount }}
+                  {{ $t("min") }} ${{ minTrasferAmount }}
                 </div>
                 <div class="w-[50%]">
                   <URange
@@ -99,19 +99,21 @@
                   </div>
                 </div>
                 <div class="text-xs ml-[2%] text-blue-500 text-center">
-                  max ${{ maxTrasferAmount }}
+                  {{ $t("max") }} ${{ maxTrasferAmount }}
                 </div>
               </div>
               <div class="flex w-[20%] justify-center items-center">
-                <div class="mr-[2%] text-xs text-gray-500">Choose a Card :</div>
+                <div class="mr-[2%] text-xs text-gray-500">
+                  {{ $t("choose_a_card") }} :
+                </div>
                 <div>
                   <URadioGroup
                     color="blue"
                     :ui-radio="{ label: 'text-blue-500 dark:tw-text-blue-500' }"
                     :options="[
-                      { value: 'debit', label: 'debit' },
-                      { value: 'credit', label: 'credit' },
-                      { value: 'all', label: 'all' },
+                      { value: 'debit', label: t('debit') },
+                      { value: 'credit', label: t('credit') },
+                      { value: 'all', label: t('all') },
                     ]"
                     v-model="selectedCard"
                   />
@@ -147,7 +149,9 @@
                       ? 'bg-green-500 bg-opacity-10 text-green-500'
                       : 'bg-orange-500 bg-opacity-10 text-orange-500',
                   ]"
-                  >{{ row.state }}</span
+                  >{{
+                    row.state === "success" ? $t("success") : $t("pending")
+                  }}</span
                 ></template
               >
             </UTable>
@@ -189,7 +193,7 @@
                 ? 'bg-green-500 bg-opacity-10 text-green-500'
                 : 'bg-orange-500 bg-opacity-10 text-orange-500',
             ]"
-            >{{ row.state }}</span
+            >{{ row.state === "success" ? $t("success") : $t("pending") }}</span
           ></template
         >
       </UTable>
@@ -200,7 +204,7 @@
     <div
       class="h-[20vh] flex text-center text-gray-500 justify-center items-center"
     >
-      No Transactions Yet.
+      {{ $t("no_transaction_yet") }}
     </div>
   </div>
 </template>
@@ -210,7 +214,9 @@ import { GetTransactionStore } from "@/stores/transactionStore";
 import { _blue } from "#tailwind-config/theme/typography";
 import { sub, format, isSameDay, type Duration } from "date-fns";
 import { _columns } from "#tailwind-config/theme";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const getTransactionStore = GetTransactionStore();
 const isOpen = ref(false);
 const range = ref(0);
@@ -220,12 +226,12 @@ const selectedCard = ref("all");
 const searchName = ref("");
 
 const columns = [
-  { label: "Transaction", key: "user", sortable: false },
-  { label: "Date", key: "date", sortable: true },
-  { label: "Detail", key: "detail", sortable: false },
-  { label: "Card Number", key: "number", sortable: true },
-  { label: "Amount", key: "amount", sortable: true },
-  { label: "Status", key: "state", sortable: true },
+  { label: t("transaction"), key: "user", sortable: false },
+  { label: t("date"), key: "date", sortable: true },
+  { label: t("detail"), key: "detail", sortable: false },
+  { label: t("card_number"), key: "number", sortable: true },
+  { label: t("amount"), key: "amount", sortable: true },
+  { label: t("status"), key: "state", sortable: true },
 ];
 
 const getRows = (number: number) => {
@@ -278,12 +284,12 @@ const getAllRows = computed(() => {
 });
 
 const ranges = [
-  { label: "Last 7 days", duration: { days: 7 } },
-  { label: "Last 14 days", duration: { days: 14 } },
-  { label: "Last 30 days", duration: { days: 30 } },
-  { label: "Last 3 months", duration: { months: 3 } },
-  { label: "Last 6 months", duration: { months: 6 } },
-  { label: "Last year", duration: { years: 1 } },
+  { label: t("last_7_days"), duration: { days: 7 } },
+  { label: t("last_14_days"), duration: { days: 14 } },
+  { label: t("last_30_days"), duration: { days: 30 } },
+  { label: t("last_3_months"), duration: { months: 3 } },
+  { label: t("last_6_months"), duration: { months: 6 } },
+  { label: t("last_year"), duration: { years: 1 } },
 ];
 const selectedDate = ref({
   start: sub(new Date(), { days: 14 }),
@@ -312,6 +318,23 @@ const clearFilter = async () => {
   searchName.value = "";
 };
 
+const ws = new WebSocket("ws://localhost:8080");
+
+ws.onopen;
+
+ws.onerror = (error) => {
+  console.error("WebSocket error in transactions.vue:", error);
+};
+
+ws.onmessage = async (event) => {
+  const data = JSON.parse(event.data);
+  if (data.type === "transaction") {
+    await getTransactionStore.fetchTransactions();
+  }
+};
+
+ws.onclose;
+
 onMounted(async () => {
   await getTransactionStore.fetchTransactions();
 
@@ -326,19 +349,6 @@ onMounted(async () => {
     );
   }
   range.value = minTrasferAmount.value;
-
-  const ws = new WebSocket("ws://localhost:8080");
-
-  ws.onmessage = async (event) => {
-    const data = JSON.parse(event.data);
-    if (data.type === "transaction") {
-      await getTransactionStore.fetchTransactions();
-    }
-  };
-
-  ws.onclose = () => {
-    console.log("WebSocket connection closed");
-  };
 });
 </script>
 

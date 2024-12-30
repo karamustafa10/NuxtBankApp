@@ -3,6 +3,7 @@ import { ref } from "vue";
 import type { People } from "~/models/people";
 import { useRouter } from "vue-router";
 import { useToast, POSITION } from "vue-toastification";
+import { useI18n } from "vue-i18n";
 
 export const UserInfoStore = defineStore("userInfo", () => {
   const toast = useToast();
@@ -114,6 +115,8 @@ export const addUserStore = defineStore("addUser", () => {
   const confirmPassword = ref();
   const router = useRouter();
 
+  const { t } = useI18n();
+
   const handleSubmit = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^\+\d{10,14}$/;
@@ -126,38 +129,35 @@ export const addUserStore = defineStore("addUser", () => {
       !password.value ||
       !confirmPassword.value
     ) {
-      toast.error("All fields must be filled!", {
+      toast.error(t("all_fields_must_be_filled"), {
         position: POSITION.TOP_CENTER,
       });
       return;
     }
 
     if (!emailRegex.test(mail.value)) {
-      toast.error("Please enter a valid email address!", {
+      toast.error(t("please_enter_a_valid_email_address"), {
         position: POSITION.TOP_CENTER,
       });
       return;
     }
 
     if (!phoneRegex.test(phone.value)) {
-      toast.error(
-        "Please enter a valid phone number in the format +XXXXXXXXXXX",
-        {
-          position: POSITION.TOP_CENTER,
-        }
-      );
+      toast.error(t("please_enter_valid_phone"), {
+        position: POSITION.TOP_CENTER,
+      });
       return;
     }
 
     if (password.value.length < 8) {
-      toast.error("Password must be at least 8 characters long!", {
+      toast.error(t("please_enter_valid_password"), {
         position: POSITION.TOP_CENTER,
       });
       return;
     }
 
     if (password.value !== confirmPassword.value) {
-      toast.error("Passwords do not match!", {
+      toast.error(t("password_do_not_match"), {
         position: POSITION.TOP_CENTER,
       });
       return;
@@ -174,10 +174,21 @@ export const addUserStore = defineStore("addUser", () => {
           password: password.value,
         },
       });
-      toast.info(`${response.message}`, {
-        position: POSITION.TOP_CENTER,
-      });
-      if (response.success) {
+
+      if (response.message === "Telefon numarası zaten kullanımda.") {
+        toast.error(t("phone_number_already_in_use"), {
+          position: POSITION.TOP_CENTER,
+        });
+        return;
+      } else if (response.message === "E-posta adresi zaten kullanımda.") {
+        toast.error(t("email_already_in_use"), {
+          position: POSITION.TOP_CENTER,
+        });
+        return;
+      } else if (response.success === true) {
+        toast.success(t("welcome") + response.message, {
+          position: POSITION.TOP_CENTER,
+        });
         router.push("/");
       }
     } catch (error) {
@@ -186,7 +197,7 @@ export const addUserStore = defineStore("addUser", () => {
           position: POSITION.TOP_CENTER,
         });
       } else {
-        toast.error("An unknown error occurred.", {
+        toast.error(t("an_unknown_error_occurred"), {
           position: POSITION.TOP_CENTER,
         });
       }

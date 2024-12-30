@@ -14,6 +14,7 @@ import {
   LinearScale,
 } from "chart.js";
 import { Bar } from "vue-chartjs";
+import { useI18n } from "vue-i18n";
 
 ChartJS.register(
   CategoryScale,
@@ -26,6 +27,7 @@ ChartJS.register(
 
 const getTransactionStore = GetTransactionStore();
 const transactionCount = ref(0);
+const { t } = useI18n();
 
 const updateChartData = () => {
   const incomingAmounts = Array(14).fill(0);
@@ -65,21 +67,25 @@ onMounted(async () => {
   await getTransactionStore.fetchTransactions();
   transactionCount.value = getTransactionStore.transactions.length;
   updateChartData();
-
-  const ws = new WebSocket("ws://localhost:8080");
-
-  ws.onmessage = async (event) => {
-    const data = JSON.parse(event.data);
-    if (data.type === "transaction") {
-      await getTransactionStore.fetchTransactions();
-      updateChartData();
-    }
-  };
-
-  ws.onclose = () => {
-    console.log("WebSocket connection closed");
-  };
 });
+
+const ws = new WebSocket("ws://localhost:8080");
+
+ws.onopen;
+
+ws.onerror = (error) => {
+  console.error("WebSocket error in chart.vue:", error);
+};
+
+ws.onmessage = async (event) => {
+  const data = JSON.parse(event.data);
+  if (data.type === "transaction") {
+    await getTransactionStore.fetchTransactions();
+    updateChartData();
+  }
+};
+
+ws.onclose;
 
 const data = ref<{
   labels: string[];
@@ -92,12 +98,12 @@ const data = ref<{
   }),
   datasets: [
     {
-      label: "Income",
+      label: t("income"),
       backgroundColor: "green",
       data: [],
     },
     {
-      label: "Outcome",
+      label: t("expense"),
       backgroundColor: "red",
       data: [],
     },

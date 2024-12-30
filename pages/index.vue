@@ -57,6 +57,8 @@
 import { ref, onMounted } from "vue";
 import { UserInfoStore } from "@/stores/userStore";
 
+import { useI18n } from "vue-i18n";
+
 const userInfoStore = UserInfoStore();
 const loading = ref(true);
 
@@ -69,8 +71,16 @@ onMounted(async () => {
   loading.value = false; // Set loading to false once data is loaded
 });
 
+onUpdated(async () => {
+  useHead({
+    title: "Ridex | " + `${t("index")}`,
+  });
+});
+
+const { t } = useI18n();
+
 useHead({
-  title: "Ridex | Future Bank App",
+  title: "Ridex | " + `${t("index")}`,
 });
 
 definePageMeta({

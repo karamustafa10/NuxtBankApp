@@ -1,5 +1,5 @@
 <template>
-  <div class="text-sm font-semibold">Quick Transfer</div>
+  <div class="text-sm font-semibold">{{ $t("quick_transfer") }}</div>
   <div class="w-[100%] mt-[3%]">
     <USelectMenu
       color="blue"
@@ -7,11 +7,13 @@
       value-attribute="type"
       option-attribute="cardName"
       class="w-[100%]"
-      placeholder="Select a card"
+      :placeholder="$t('select_a_card')"
       :options="
         getCardWithIdStore.cards.map((card) => ({
           ...card,
-          cardName: `${card.cardName} ( ${Number(card.cardAmount).toFixed(2)}$ )`,
+          cardName: `${card.cardName} ( ${Number(card.cardAmount).toFixed(
+            2
+          )}$ )`,
         }))
       "
     />
@@ -22,7 +24,7 @@
       type="number"
       class="w-[100%]"
       v-model="enterAmountQuick"
-      placeholder="Enter Amount..."
+      :placeholder="$t('enter_amount')"
     />
   </div>
   <div class="flex justify-between mt-[5%] w-[100%]">
@@ -32,7 +34,7 @@
         icon="i-heroicons-arrow-up-tray"
       >
         <div class="icon mb-1"></div>
-        <span>Send</span>
+        <span>{{ $t("send") }}</span>
       </UButton>
     </div>
     <div class="flex flex-col items-center w-[23%]">
@@ -41,7 +43,7 @@
         icon="i-heroicons-arrow-down-tray"
       >
         <div class="icon mb-1"></div>
-        <span>Receive</span>
+        <span>{{ $t("reiceve") }}</span>
       </UButton>
     </div>
     <div class="flex flex-col items-center w-[23%]">
@@ -50,7 +52,7 @@
         icon="i-heroicons-receipt-percent"
       >
         <div class="icon mb-1"></div>
-        <span>Invoicing</span>
+        <span>{{ $t("invoicing") }}</span>
       </UButton>
     </div>
     <div class="flex flex-col items-center w-[23%]">
@@ -59,7 +61,7 @@
         icon="i-heroicons-squares-plus"
       >
         <div class="icon mb-1"></div>
-        <span>More</span>
+        <span>{{ $t("more") }}</span>
       </UButton>
     </div>
   </div>

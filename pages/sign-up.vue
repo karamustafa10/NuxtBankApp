@@ -9,20 +9,19 @@
         <div class="w-[50%] ml-[15%] mt-[10%]">
           <Logo />
         </div>
-        <div class="ml-[15%] mt-[3%] text-3xl font-semibold">Sign up</div>
+        <div class="ml-[15%] mt-[3%] text-3xl font-semibold">
+          {{ $t("sign_up") }}
+        </div>
         <div class="ml-[15%] mt-[3%] text-xs">
-          You already have account?
+          {{ $t("you_already_have_account") }}
           <span class="text-[#0177fb] underline"
-            ><a href="/sign-in">Sign in!</a></span
+            ><a href="/sign-in">{{ $t("sign_in") }}</a></span
           >
         </div>
         <div class="ml-[15%] mt-[4%]">
-          <div class="text-xs flex">
-            <div>First Name</div>
-            <div class="ml-[25%]">Last Name</div>
-          </div>
           <div class="flex">
             <div class="w-[35%] mt-[1%] mr-[5%]">
+              <div class="text-xs mb-[1%]">{{ $t("first_name") }}</div>
               <UInput
                 v-model="store.$state.firstName"
                 color="blue"
@@ -31,6 +30,7 @@
               />
             </div>
             <div class="w-[40%] mt-[1%]">
+              <div class="text-xs mb-[1%]">{{ $t("last_name") }}</div>
               <UInput
                 v-model="store.$state.lastName"
                 color="blue"
@@ -39,7 +39,7 @@
               />
             </div>
           </div>
-          <div class="text-xs mt-[2%]">Phone</div>
+          <div class="text-xs mt-[2%]">{{ $t("phone") }}</div>
           <div class="w-[80%] mt-[1%]">
             <UInput
               v-model="store.$state.phone"
@@ -57,12 +57,9 @@
               :ui="{ variant: { outline: 'bg-white' } }"
             />
           </div>
-          <div class="text-xs flex mt-[2%]">
-            <div>Password</div>
-            <div class="ml-[30%]">Password again</div>
-          </div>
           <div class="flex">
-            <div class="w-[38%] mt-[1%] mr-[4%]">
+            <div class="w-[38%] mt-[2%] mr-[4%]">
+              <div class="text-xs mb-[1%]">{{ $t("password") }}</div>
               <UInput
                 v-model="store.$state.password"
                 type="password"
@@ -71,7 +68,8 @@
                 :ui="{ variant: { outline: 'bg-white' } }"
               />
             </div>
-            <div class="w-[38%] mt-[1%]">
+            <div class="w-[38%] mt-[2%]">
+              <div class="text-xs mb-[1%]">{{ $t("password_again") }}</div>
               <UInput
                 v-model="store.$state.confirmPassword"
                 type="password"
@@ -88,12 +86,12 @@
               size="sm"
               color="blue"
               variant="solid"
-              label="Sign up"
+              :label="$t('sign_up')"
             />
           </div>
           <div class="w-[80%] mt-[3%]">
             <UDivider
-              label="or"
+              :label="$t('or')"
               type="solid"
               size="xs"
               :ui="{ border: { base: 'border-blue-400' } }"
@@ -105,7 +103,7 @@
               size="sm"
               color="white"
               variant="solid"
-              label="Sign up with Google"
+              :label="$t('sign_up_with_google')"
             />
           </div>
           <div class="mt-[3%] w-[80%] border-2 border-blue-500 rounded-lg">
@@ -114,8 +112,45 @@
               size="sm"
               color="white"
               variant="solid"
-              label="Sign up with Facebook"
+              :label="$t('sign_up_with_facebook')"
             />
+          </div>
+          <div class="flex flex-col w-[55%] justify-center ml-[12%] mt-[2%]">
+            <div class="flex justify-around mb-[10%]">
+              <div class="flex justify-center w-[20%]">
+                <UButton
+                  color="blue"
+                  variant="ghost"
+                  class="flex w-[100%] justify-center"
+                  @click="changeLocale('tr')"
+                  ><img
+                    src="https://cdn-icons-png.flaticon.com/512/197/197518.png"
+                    alt="tr"
+                /></UButton>
+              </div>
+              <div class="flex justify-center w-[20%]">
+                <UButton
+                  color="blue"
+                  variant="ghost"
+                  class="flex w-[100%] justify-center"
+                  @click="changeLocale('en')"
+                  ><img
+                    src="https://cdn-icons-png.flaticon.com/512/197/197484.png"
+                    alt="en"
+                /></UButton>
+              </div>
+              <div class="flex justify-center w-[20%]">
+                <UButton
+                  color="blue"
+                  variant="ghost"
+                  class="flex w-[100%] justify-center"
+                  @click="changeLocale('fr')"
+                  ><img
+                    src="https://cdn-icons-png.flaticon.com/512/197/197560.png"
+                    alt="fr"
+                /></UButton>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -126,7 +161,7 @@
           <div class="mr-[1%]">
             <UIcon name="i-heroicons-link" class="w-4 h-4 text-white" />
           </div>
-          <div class="text-sm text-white">Support</div>
+          <div class="text-sm text-white">{{ $t("support") }}</div>
         </div>
         <div class="px-[15%] py-[10%]">
           <img
@@ -138,7 +173,7 @@
         <div
           class="flex justify-center text-center text-2xl font-semibold text-white"
         >
-          Check your budget with RIDEX!
+          {{ $t("check_y_b_w_r") }}
         </div>
         <div class="flex text-center mt-[2%] p-[2%] text-white">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore
@@ -159,6 +194,9 @@
 
 <script setup lang="ts">
 import { addUserStore } from "@/stores/userStore";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const store = addUserStore();
 
@@ -166,8 +204,13 @@ async function handleSubmit() {
   store.handleSubmit();
 }
 
+const changeLocale = (locale: string) => {
+  localStorage.setItem("locale", locale);
+  window.location.reload();
+};
+
 useHead({
-  title: "Ridex | Sign Up",
+  title: "Ridex | " + `${t("sign_up")}`,
 });
 
 definePageMeta({
